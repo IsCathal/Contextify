@@ -21,12 +21,16 @@ Install the required dependencies by running:
 
   ```bash
 
+  ```bash
+
 npm install
 Development
 Build
-To create a production build of your extension:
 
   ```bash
+
+To create a production build of your extension:
+
 
   ```bash
 npm run build
@@ -40,6 +44,9 @@ To run Parcel in watch mode (for automatic rebuilding when code changes):
   ```bash
 
 npm run watch
+
+  ```bash
+
 This will automatically rebuild your code whenever changes are made, placing the output files in the src/build/ folder.
 
 Testing the Extension

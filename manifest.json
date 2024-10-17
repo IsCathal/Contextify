@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Name of your chrome extension",
-  "description": "Description of your chrome extension.",
+  "name": "Contextify",
+  "description": "Chrome Extension, using Chrome built-in AI",
   "version": "1.0",
 
   "browser_action": {

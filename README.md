@@ -1,6 +1,6 @@
 
 Copy code
-# Extension Name
+# Contextify
 
 ## Description
 This is a Chrome extension built using React, Parcel, and Babel. The extension provides [briefly describe the purpose and functionality of the extension].
@@ -19,23 +19,22 @@ This is a Chrome extension built using React, Parcel, and Babel. The extension p
    cd extension-name
 Install the required dependencies by running:
 
-bash
-Copy code
+  ```bash
+
 npm install
 Development
 Build
 To create a production build of your extension:
 
-bash
-Copy code
+  ```bash
 npm run build
 The build files will be placed in the src/build/ folder.
 
 Watch Mode
 To run Parcel in watch mode (for automatic rebuilding when code changes):
 
-bash
-Copy code
+  ```bash
+
 npm run watch
 This will automatically rebuild your code whenever changes are made, placing the output files in the src/build/ folder.
 
@@ -44,8 +43,8 @@ To test the Chrome extension locally, follow these steps:
 
 Build your extension (if not already built) by running:
 
-bash
-Copy code
+  ```bash
+
 npm run build
 Open Chrome and go to chrome://extensions/.
 

@@ -27,8 +27,12 @@ Build
 To create a production build of your extension:
 
   ```bash
+
+  ```bash
 npm run build
 The build files will be placed in the src/build/ folder.
+
+  ```bash
 
 Watch Mode
 To run Parcel in watch mode (for automatic rebuilding when code changes):
@@ -48,6 +52,7 @@ Build your extension (if not already built) by running:
 npm run build
 Open Chrome and go to chrome://extensions/.
 
+  ```bash
 Enable Developer Mode by toggling the switch in the upper-right corner.
 
 Click the Load Unpacked button.

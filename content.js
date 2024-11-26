@@ -1,23 +1,33 @@
-// content.js
-
-// Function to map categories to colors
-function getColor(category) {
-  switch (category) {
-    case 'History & Society':
-      return 'green';
-    case 'Literature & Art':
-      return 'orange';
-    case 'Places & Spaces':
-      return 'brown';
-    case 'Performance & Expression':
-      return 'purple';
-    case 'The Human Experience':
-      return 'red';
-    case "The Creator's Lens":
-      return 'blue';
-    default:
-      return null;
+// categoryInfo object containing categories, colors, and descriptions
+const categoryInfo = {
+  'History & Society': {
+    color: 'green',
+    description: 'Refers to topics like historical events, cultural practices, social structures, politics, geography, and local traditions.'
+  },
+  'Literature & Art': {
+    color: 'orange',
+    description: 'Points to references from literature, art, music, mythology, philosophical texts, religious scriptures, biographies, and other cultural works.'
+  },
+  'Places & Spaces': {
+    color: 'brown',
+    description: 'Highlights geographical locations, architecture, infrastructure, landmarks, and public spaces, as well as their significance in the narrative.'
+  },
+  'Performance & Expression': {
+    color: 'purple',
+    description: 'Indicates connections to performance arts like music, theater, dance, rituals, public speaking, rhetorical styles, and creative expression in daily life.'
+  },
+  'The Human Experience': {
+    color: 'red',
+    description: 'Addresses themes related to the human body, emotions, relationships, food, health, memory, dreams, and mortality.'
+  },
+  "The Creator's Lens": {
+    color: 'blue',
+    description: 'Focuses on stylistic elements, narrative techniques, textual analysis, creative processes, and interpretive frameworks.'
   }
+};
+
+function getCategoryInfo(category) {
+  return categoryInfo[category] || null;
 }
 
 // Function to categorize a sentence based on keywords
@@ -50,10 +60,10 @@ function processParagraphs() {
 
     for (let sentence of sentences) {
       const category = categorizeSentence(sentence);
-      const colorClass = getColor(category);
+      const categoryData = getCategoryInfo(category);
 
-      if (colorClass) {
-        newHTML += `<span class="${colorClass}">${sentence}</span>`;
+      if (categoryData) {
+        newHTML += `<span class="tooltip ${categoryData.color}" data-description="${categoryData.description}">${sentence}</span>`;
       } else {
         newHTML += sentence;
       }

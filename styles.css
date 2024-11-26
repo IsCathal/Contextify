@@ -1,5 +1,4 @@
-/* styles.css */
-
+/* Base styles for colored text */
 .green {
   color: green;
 }
@@ -22,4 +21,51 @@
 
 .blue {
   color: blue;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltip::after {
+  content: attr(data-description);
+  visibility: hidden;
+  opacity: 0;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 5px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the text */
+  left: 50%;
+  margin-left: -100px; /* Center the tooltip */
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 115%; /* Adjust based on tooltip positioning */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Show the tooltip text when hovering */
+.tooltip:hover::after,
+.tooltip:hover::before {
+  visibility: visible;
+  opacity: 1;
 }

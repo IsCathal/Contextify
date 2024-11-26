@@ -1,24 +1,25 @@
 {
-  "manifest_version": 2,
-
-  "name": "Contextify",
-  "description": "Chrome Extension, using Chrome built-in AI",
+  "manifest_version": 3,
+  "name": "Contexify",
   "version": "1.0",
-
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "src/popup.html"
-  },
-
+  "description": "Adds color-coded, thematic hyperlinks to Project Gutenberg texts.",
   "permissions": [
+    "scripting",
     "activeTab",
-    "tabs"
+    "experimental"
   ],
-
+  "host_permissions": [
+    "https://www.gutenberg.org/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/build/main.js"]
+      "matches": ["https://www.gutenberg.org/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
     }
-  ]
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
 }

@@ -10,24 +10,24 @@
     "experimental"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup.html",
     "default_title": "Extension Features"
   },
   "host_permissions": [
     "https://www.gutenberg.org/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
       "matches": ["https://www.gutenberg.org/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "js": ["src/content.js"],
+      "css": ["src/styles.css"]
     }
   ],
   "icons": {
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "48": "src/icons/icon48.png",
+    "128": "src/icons/icon128.png"
   }
 }

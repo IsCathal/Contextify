@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // Create a context menu item when text is selected
   chrome.contextMenus.create({
     id: 'rewriteText',
-    title: 'Ai English tutor: Rewrite Text',
+    title: 'Rewrite in Modern Language',
     contexts: ['selection'],
   });
 });
@@ -29,42 +29,15 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 function rewriteTextInPageContext(selectedText) {
   let originalText = selectedText;
   let rewriterInstance = null;
+  let session = null;
   let modalOverlay = null;
   let modal = null;
   let rewrittenTextDiv = null;
   let loadingIcon = null;
   let errorMessageDiv = null;
   let retryButton = null;
+  let usePromptAPIButton = null;
   let cancelButton = null;
-
-  // Function to generate rewritten text using non-streaming method
-  async function generateRewrittenText() {
-    console.log('Generating rewritten text...');
-
-    // Create the rewriter instance with desired options
-    rewriterInstance = await ai.rewriter.create({
-      tone: 'more-casual',    // more casual tone
-      format: 'plain-text',   // Output in plain text
-      length: 'as-is',        // Keep the original length
-      sharedContext: 'English Educational material for students studying literature.'
-    });
-
-    // Context to guide the rewriting process
-    const context = `
-    As an English tutor specializing in literature, rewrite the following text in modern English to make it accessible and engaging for contemporary students.
-    - Use a more casual tone to make it relatable.
-    - Simplify archaic language and clarify complex sentences where necessary.
-    - Preserve the original meaning and literary elements.`;
-
-    console.log(context);
-
-    // Perform the rewrite
-    const rewrittenText = await rewriterInstance.rewrite(originalText, { context });
-
-    console.log('Rewritten text received:', rewrittenText.trim());
-    return rewrittenText.trim();
-  }
-
 
   (async () => {
     try {
@@ -73,37 +46,100 @@ function rewriteTextInPageContext(selectedText) {
       // Show the modal with loading icon immediately
       showLoadingModal();
 
-      // Check if 'ai' is available
-      if (typeof ai === 'undefined') {
-        alert('The AI APIs are not available in this browser.');
-        console.log('ai is undefined');
-        removeModal();
-        return;
-      }
-
-      // Create the rewriter instance
-      if (ai.rewriter) {
-        rewriterInstance = await ai.rewriter.create();
-        console.log('Rewriter instance created:', rewriterInstance);
-      } else {
-        alert('The Rewriter API is not available.');
-        console.log('ai.rewriter is not available');
-        removeModal();
-        return;
-      }
-
-      // Initial generation of rewritten text
-      let rewrittenText = await generateRewrittenText();
+      // Try using the Rewriter API
+      let rewrittenText = await generateRewrittenTextWithRewriterAPI();
 
       // Update the modal with the rewritten text and options
       updateModalWithResult(rewrittenText);
 
-    } catch (error) {
-      console.error('Error rewriting text:', error);
-      // Show error message and provide option to resend the request
-      showErrorInModal('An error occurred while rewriting the text.');
+    } catch (rewriterError) {
+      console.error('Error using Rewriter API:', rewriterError);
+
+      // Show error modal with options
+      showRewriterErrorModal();
     }
   })();
+
+  // Function to generate rewritten text using the Rewriter API
+  async function generateRewrittenTextWithRewriterAPI() {
+    console.log('Generating rewritten text using Rewriter API...');
+
+    // Check if 'ai' and 'ai.rewriter' are available
+    if (typeof ai === 'undefined' || !ai.rewriter) {
+      throw new Error('The AI Rewriter API is not available.');
+    }
+
+    // Create the rewriter instance
+    rewriterInstance = await ai.rewriter.create();
+    console.log('Rewriter instance created:', rewriterInstance);
+
+    // Context to guide the rewriting process
+    const context = `
+      As an English tutor specializing in literature, rewrite the following text in modern English to make it accessible and engaging for contemporary students.
+      - Simplify archaic language and clarify complex sentences where necessary.
+      - Preserve the original meaning and literary elements.
+    `;
+
+    // Perform the rewrite
+    const rewrittenText = await rewriterInstance.rewrite(originalText, { context });
+    console.log('Rewritten text received from Rewriter API:', rewrittenText.trim());
+
+    return rewrittenText.trim();
+  }
+
+  // Function to generate rewritten text using the Prompt API
+  async function generateRewrittenTextWithPromptAPI() {
+    console.log('Generating rewritten text using Prompt API...');
+
+  // Check if 'ai' and 'ai.languageModel' are available
+  if (typeof ai === 'undefined' || !ai.languageModel) {
+    throw new Error('The AI Language Model API is not available.');
+  }
+
+  // Check the capabilities of the language model
+  const { available, defaultTemperature, defaultTopK, maxTopK } = await ai.languageModel.capabilities();
+
+  if (available !== "no") {
+    // Set temperature and topK
+    const temperature = 1;
+    const topK = 3;
+
+    // Construct the system prompt
+    const systemPrompt = `
+      You are an English tutor specializing in literature. Rewrite the following text in modern English to make it accessible and engaging for contemporary students.
+      - Simplify archaic language and clarify complex sentences where necessary.
+      - Preserve the original meaning and literary elements.
+      - Return only the text of the Rewrite
+    `;
+
+    // Create a language model session with specific parameters and system prompt
+    const session = await ai.languageModel.create({
+      temperature: temperature,
+      topK: topK,
+      systemPrompt: systemPrompt,
+    });
+    console.log('Language model session created with temperature:', temperature, 'and topK:', topK);
+
+    try {
+      // Prompt the model with the original text
+      const rewrittenText = await session.prompt(originalText);
+      console.log('Rewritten text received from Prompt API:', rewrittenText.trim());
+
+      // Destroy the session
+      session.destroy();
+
+      return rewrittenText.trim();
+    } catch (error) {
+      console.error('Error during prompting:', error);
+
+      // Destroy the session in case of error
+      session.destroy();
+      throw error;
+    }
+  } else {
+    throw new Error('The AI Language Model API is not available.');
+  }
+};
 
   // Function to show the modal with loading icon
   function showLoadingModal() {
@@ -128,8 +164,6 @@ function rewriteTextInPageContext(selectedText) {
     modal.appendChild(loadingIcon);
     modalOverlay.appendChild(modal);
     document.body.appendChild(modalOverlay);
-
-    // Styles are applied via CSS
   }
 
   // Function to update the modal with the rewritten text and options
@@ -192,57 +226,62 @@ function rewriteTextInPageContext(selectedText) {
     acceptButton.onclick = () => {
       replaceSelectedText(rewrittenText);
       removeModal();
-      if (rewriterInstance) {
-        rewriterInstance.destroy();
-        console.log('Rewriter instance destroyed');
-      }
+      destroyResources();
     };
 
     retryButton.onclick = async () => {
       // Show loading icon
       showLoadingModal();
       try {
-        let newRewrittenText = await generateRewrittenText();
-        updateModalWithResult(newRewrittenText);
+        let rewrittenText = await generateRewrittenTextWithRewriterAPI();
+        updateModalWithResult(rewrittenText);
       } catch (error) {
-        console.error('Error rewriting text:', error);
-        showErrorInModal('An error occurred while rewriting the text.');
+        console.error('Error rewriting text on retry:', error);
+        // Show error modal with options
+        showRewriterErrorModal();
       }
     };
 
     cancelButton.onclick = () => {
       removeModal();
-      if (rewriterInstance) {
-        rewriterInstance.destroy();
-        console.log('Rewriter instance destroyed');
-      }
+      destroyResources();
     };
   }
 
-  // Function to show error message in modal
-  function showErrorInModal(message) {
+  // Function to show error modal when Rewriter API fails
+  function showRewriterErrorModal() {
     // Clear the modal content
     modal.innerHTML = '';
 
     const title = document.createElement('h2');
-    title.innerText = 'Error';
+    title.innerText = 'Error with Rewriter API';
 
     errorMessageDiv = document.createElement('div');
     errorMessageDiv.id = 'errorMessage';
-    errorMessageDiv.innerText = message;
+    errorMessageDiv.innerText = 'An error occurred while using the Rewriter API.';
 
     const buttonContainer = document.createElement('div');
     buttonContainer.id = 'buttonContainer';
 
     retryButton = document.createElement('button');
     retryButton.id = 'retryButton';
-    retryButton.title = 'Retry';
+    retryButton.title = 'Retry Rewriter API';
 
     const retryIcon = document.createElement('span');
     retryIcon.innerHTML = '&#8635;'; // Unicode clockwise gapped circle arrow
     retryIcon.style.fontSize = '24px';
 
     retryButton.appendChild(retryIcon);
+
+    usePromptAPIButton = document.createElement('button');
+    usePromptAPIButton.id = 'usePromptAPIButton';
+    usePromptAPIButton.title = 'Use Prompt API';
+
+    const promptIcon = document.createElement('span');
+    promptIcon.innerHTML = '&#128187;'; // Unicode for laptop (representing AI)
+    promptIcon.style.fontSize = '24px';
+
+    usePromptAPIButton.appendChild(promptIcon);
 
     cancelButton = document.createElement('button');
     cancelButton.id = 'cancelButton';
@@ -257,6 +296,7 @@ function rewriteTextInPageContext(selectedText) {
 
     // Append elements
     buttonContainer.appendChild(retryButton);
+    buttonContainer.appendChild(usePromptAPIButton);
     buttonContainer.appendChild(cancelButton);
 
     modal.appendChild(title);
@@ -268,20 +308,70 @@ function rewriteTextInPageContext(selectedText) {
       // Show loading icon
       showLoadingModal();
       try {
-        let newRewrittenText = await generateRewrittenText();
-        updateModalWithResult(newRewrittenText);
+        let rewrittenText = await generateRewrittenTextWithRewriterAPI();
+        updateModalWithResult(rewrittenText);
       } catch (error) {
-        console.error('Error rewriting text:', error);
-        showErrorInModal('An error occurred while rewriting the text.');
+        console.error('Error rewriting text on retry:', error);
+        // Show error modal again
+        showRewriterErrorModal();
+      }
+    };
+
+    usePromptAPIButton.onclick = async () => {
+      // Show loading icon
+      showLoadingModal();
+      try {
+        let rewrittenText = await generateRewrittenTextWithPromptAPI();
+        updateModalWithResult(rewrittenText);
+      } catch (error) {
+        console.error('Error using Prompt API:', error);
+        showErrorInModal('An error occurred while using the Prompt API.');
       }
     };
 
     cancelButton.onclick = () => {
       removeModal();
-      if (rewriterInstance) {
-        rewriterInstance.destroy();
-        console.log('Rewriter instance destroyed');
-      }
+      destroyResources();
+    };
+  }
+
+  // Function to show generic error message in modal
+  function showErrorInModal(message) {
+    // Clear the modal content
+    modal.innerHTML = '';
+
+    const title = document.createElement('h2');
+    title.innerText = 'Error';
+
+    errorMessageDiv = document.createElement('div');
+    errorMessageDiv.id = 'errorMessage';
+    errorMessageDiv.innerText = message;
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'buttonContainer';
+
+    cancelButton = document.createElement('button');
+    cancelButton.id = 'cancelButton';
+    cancelButton.title = 'Close';
+
+    const cancelIcon = document.createElement('span');
+    cancelIcon.innerHTML = '&#10005;'; // Unicode multiplication sign
+    cancelIcon.style.fontSize = '24px';
+    cancelIcon.style.color = 'red';
+
+    cancelButton.appendChild(cancelIcon);
+
+    // Append elements
+    buttonContainer.appendChild(cancelButton);
+
+    modal.appendChild(title);
+    modal.appendChild(errorMessageDiv);
+    modal.appendChild(buttonContainer);
+
+    // Event Listeners
+    cancelButton.onclick = () => {
+      removeModal();
+      destroyResources();
     };
   }
 
@@ -291,6 +381,20 @@ function rewriteTextInPageContext(selectedText) {
       modalOverlay.remove();
       modalOverlay = null;
       modal = null;
+    }
+  }
+
+  // Function to destroy resources
+  function destroyResources() {
+    if (rewriterInstance) {
+      rewriterInstance.destroy();
+      rewriterInstance = null;
+      console.log('Rewriter instance destroyed');
+    }
+    if (session) {
+      session.destroy();
+      session = null;
+      console.log('Language model session destroyed');
     }
   }
 
@@ -315,3 +419,4 @@ function rewriteTextInPageContext(selectedText) {
     selection.addRange(newRange);
   }
 }
+

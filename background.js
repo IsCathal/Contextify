@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // Create a context menu item when text is selected
   chrome.contextMenus.create({
     id: 'rewriteText',
-    title: 'Rewrite in Modern Language',
+    title: 'Ai English tutor: Rewrite Text',
     contexts: ['selection'],
   });
 });
@@ -40,11 +40,31 @@ function rewriteTextInPageContext(selectedText) {
   // Function to generate rewritten text using non-streaming method
   async function generateRewrittenText() {
     console.log('Generating rewritten text...');
-    const context = 'Rewrite the text in modern English while preserving its original meaning.';
+
+    // Create the rewriter instance with desired options
+    rewriterInstance = await ai.rewriter.create({
+      tone: 'more-casual',    // more casual tone
+      format: 'plain-text',   // Output in plain text
+      length: 'as-is',        // Keep the original length
+      sharedContext: 'English Educational material for students studying literature.'
+    });
+
+    // Context to guide the rewriting process
+    const context = `
+    As an English tutor specializing in literature, rewrite the following text in modern English to make it accessible and engaging for contemporary students.
+    - Use a more casual tone to make it relatable.
+    - Simplify archaic language and clarify complex sentences where necessary.
+    - Preserve the original meaning and literary elements.`;
+
+    console.log(context);
+
+    // Perform the rewrite
     const rewrittenText = await rewriterInstance.rewrite(originalText, { context });
+
     console.log('Rewritten text received:', rewrittenText.trim());
     return rewrittenText.trim();
   }
+
 
   (async () => {
     try {

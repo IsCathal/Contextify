@@ -9,6 +9,10 @@
     "activeTab",
     "experimental"
   ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Extension Features"
+  },
   "host_permissions": [
     "https://www.gutenberg.org/*"
   ],

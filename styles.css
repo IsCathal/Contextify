@@ -120,3 +120,136 @@
 .highlighted-text {
   background-color: #a0e7a0; /* Light green highlight */
 }
+
+
+/* General styles for the popup */
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 800px;
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #0077cc, #004a99);
+  color: #fff;
+  padding: 15px 20px;
+  text-align: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+main {
+  padding: 20px;
+}
+
+p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  background: #fff;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+ul li::before {
+  content: "✔️";
+  font-size: 20px;
+  color: #0077cc;
+}
+
+ul li strong {
+  font-weight: 600;
+  color: #333;
+}
+
+footer {
+  background: #004a99;
+  color: #fff;
+  text-align: center;
+  padding: 15px 20px;
+  font-size: 14px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Legend styles */
+.legend {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+/* Colors for the legend */
+.color-box.green {
+  background-color: green;
+}
+
+.color-box.orange {
+  background-color: orange;
+}
+
+.color-box.brown {
+  background-color: brown;
+}
+
+.color-box.purple {
+  background-color: purple;
+}
+
+.color-box.red {
+  background-color: red;
+}
+
+.color-box.blue {
+  background-color: blue;
+}

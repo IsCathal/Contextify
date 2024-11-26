@@ -30,7 +30,7 @@ This Chrome extension enhances your reading experience on literature websites li
 ### Clone or Download the Repository
 
 ```bash
-git clone https://github.com/yourusername/modern-language-rewriter.git
+git clone https://github.com//IsCathal/Contextify.git
 ```
 
 ### Open Chrome Extensions Page

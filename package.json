@@ -1,0 +1,19 @@
+{
+  "name": "sentence-categorizer-rewriter",
+  "version": "1.0.0",
+  "description": "Categorizes sentences and allows rewriting selected text.",
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.21.0",
+    "babel-loader": "^9.1.2",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "compromise": "^13.11.3"
+  }
+}

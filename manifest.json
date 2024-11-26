@@ -17,12 +17,12 @@
     "https://www.gutenberg.org/*"
   ],
   "background": {
-    "service_worker": "src/background/background.js"
+    "service_worker": "dist/background.bundle.js"
   },
   "content_scripts": [
     {
       "matches": ["https://www.gutenberg.org/*"],
-      "js": ["src/content.js"],
+      "js": ["dist/content.bundle.js"],
       "css": ["src/styles.css"]
     }
   ],

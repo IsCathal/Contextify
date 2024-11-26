@@ -29,15 +29,35 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 function rewriteTextInPageContext(selectedText) {
   let originalText = selectedText;
   let rewriterInstance = null;
+  let modalOverlay = null;
+  let modal = null;
+  let rewrittenTextDiv = null;
+  let loadingIcon = null;
+  let errorMessageDiv = null;
+  let retryButton = null;
+  let cancelButton = null;
+
+  // Function to generate rewritten text using non-streaming method
+  async function generateRewrittenText() {
+    console.log('Generating rewritten text...');
+    const context = 'Rewrite the text in modern English while preserving its original meaning.';
+    const rewrittenText = await rewriterInstance.rewrite(originalText, { context });
+    console.log('Rewritten text received:', rewrittenText.trim());
+    return rewrittenText.trim();
+  }
 
   (async () => {
     try {
       console.log('Attempting to rewrite text:', originalText);
 
+      // Show the modal with loading icon immediately
+      showLoadingModal();
+
       // Check if 'ai' is available
       if (typeof ai === 'undefined') {
         alert('The AI APIs are not available in this browser.');
         console.log('ai is undefined');
+        removeModal();
         return;
       }
 
@@ -48,49 +68,59 @@ function rewriteTextInPageContext(selectedText) {
       } else {
         alert('The Rewriter API is not available.');
         console.log('ai.rewriter is not available');
+        removeModal();
         return;
-      }
-
-      // Function to generate rewritten text using non-streaming method
-      async function generateRewrittenText() {
-        console.log('Generating rewritten text...');
-        const context = 'As an English tutor specializing in literature, rewrite the text in modern English to make it accessible and engaging for contemporary readers, while faithfully preserving the original meaning and tone.';
-        const rewrittenText = await rewriterInstance.rewrite(originalText, { context });
-        console.log('Rewritten text received:', rewrittenText.trim());
-        return rewrittenText.trim();
       }
 
       // Initial generation of rewritten text
       let rewrittenText = await generateRewrittenText();
 
-      // Show modal with options to accept or retry
-      showModal(originalText, rewrittenText);
+      // Update the modal with the rewritten text and options
+      updateModalWithResult(rewrittenText);
 
     } catch (error) {
       console.error('Error rewriting text:', error);
-      alert('An error occurred while rewriting the text.');
+      // Show error message and provide option to resend the request
+      showErrorInModal('An error occurred while rewriting the text.');
     }
   })();
 
-  // Function to show the modal popup
-  function showModal(originalText, rewrittenText) {
+  // Function to show the modal with loading icon
+  function showLoadingModal() {
     // Remove existing modal if any
-    const existingModal = document.getElementById('rewriteModalOverlay');
-    if (existingModal) {
-      existingModal.remove();
-    }
+    removeModal();
 
     // Create modal elements
-    const modalOverlay = document.createElement('div');
+    modalOverlay = document.createElement('div');
     modalOverlay.id = 'rewriteModalOverlay';
 
-    const modal = document.createElement('div');
+    modal = document.createElement('div');
     modal.id = 'rewriteModal';
+
+    const title = document.createElement('h2');
+    title.innerText = 'Processing...';
+
+    loadingIcon = document.createElement('div');
+    loadingIcon.id = 'loadingIcon';
+    loadingIcon.innerHTML = '⏳'; // You can replace this with a loading spinner if desired
+
+    modal.appendChild(title);
+    modal.appendChild(loadingIcon);
+    modalOverlay.appendChild(modal);
+    document.body.appendChild(modalOverlay);
+
+    // Styles are applied via CSS
+  }
+
+  // Function to update the modal with the rewritten text and options
+  function updateModalWithResult(rewrittenText) {
+    // Clear the modal content
+    modal.innerHTML = '';
 
     const title = document.createElement('h2');
     title.innerText = 'Rewritten Text';
 
-    const rewrittenTextDiv = document.createElement('div');
+    rewrittenTextDiv = document.createElement('div');
     rewrittenTextDiv.id = 'rewrittenText';
     rewrittenTextDiv.innerText = rewrittenText;
 
@@ -108,7 +138,7 @@ function rewriteTextInPageContext(selectedText) {
 
     acceptButton.appendChild(acceptIcon);
 
-    const retryButton = document.createElement('button');
+    retryButton = document.createElement('button');
     retryButton.id = 'retryButton';
     retryButton.title = 'Retry';
 
@@ -118,7 +148,7 @@ function rewriteTextInPageContext(selectedText) {
 
     retryButton.appendChild(retryIcon);
 
-    const cancelButton = document.createElement('button');
+    cancelButton = document.createElement('button');
     cancelButton.id = 'cancelButton';
     cancelButton.title = 'Cancel';
 
@@ -137,13 +167,11 @@ function rewriteTextInPageContext(selectedText) {
     modal.appendChild(title);
     modal.appendChild(rewrittenTextDiv);
     modal.appendChild(buttonContainer);
-    modalOverlay.appendChild(modal);
-    document.body.appendChild(modalOverlay);
 
     // Event Listeners
     acceptButton.onclick = () => {
       replaceSelectedText(rewrittenText);
-      document.body.removeChild(modalOverlay);
+      removeModal();
       if (rewriterInstance) {
         rewriterInstance.destroy();
         console.log('Rewriter instance destroyed');
@@ -151,24 +179,99 @@ function rewriteTextInPageContext(selectedText) {
     };
 
     retryButton.onclick = async () => {
-      rewrittenTextDiv.innerText = 'Generating...';
+      // Show loading icon
+      showLoadingModal();
       try {
         let newRewrittenText = await generateRewrittenText();
-        rewrittenText = newRewrittenText;
-        rewrittenTextDiv.innerText = newRewrittenText;
+        updateModalWithResult(newRewrittenText);
       } catch (error) {
         console.error('Error rewriting text:', error);
-        rewrittenTextDiv.innerText = 'An error occurred while rewriting the text.';
+        showErrorInModal('An error occurred while rewriting the text.');
       }
     };
 
     cancelButton.onclick = () => {
-      document.body.removeChild(modalOverlay);
+      removeModal();
       if (rewriterInstance) {
         rewriterInstance.destroy();
         console.log('Rewriter instance destroyed');
       }
     };
+  }
+
+  // Function to show error message in modal
+  function showErrorInModal(message) {
+    // Clear the modal content
+    modal.innerHTML = '';
+
+    const title = document.createElement('h2');
+    title.innerText = 'Error';
+
+    errorMessageDiv = document.createElement('div');
+    errorMessageDiv.id = 'errorMessage';
+    errorMessageDiv.innerText = message;
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'buttonContainer';
+
+    retryButton = document.createElement('button');
+    retryButton.id = 'retryButton';
+    retryButton.title = 'Retry';
+
+    const retryIcon = document.createElement('span');
+    retryIcon.innerHTML = '&#8635;'; // Unicode clockwise gapped circle arrow
+    retryIcon.style.fontSize = '24px';
+
+    retryButton.appendChild(retryIcon);
+
+    cancelButton = document.createElement('button');
+    cancelButton.id = 'cancelButton';
+    cancelButton.title = 'Cancel';
+
+    const cancelIcon = document.createElement('span');
+    cancelIcon.innerHTML = '&#10005;'; // Unicode multiplication sign
+    cancelIcon.style.fontSize = '24px';
+    cancelIcon.style.color = 'red';
+
+    cancelButton.appendChild(cancelIcon);
+
+    // Append elements
+    buttonContainer.appendChild(retryButton);
+    buttonContainer.appendChild(cancelButton);
+
+    modal.appendChild(title);
+    modal.appendChild(errorMessageDiv);
+    modal.appendChild(buttonContainer);
+
+    // Event Listeners
+    retryButton.onclick = async () => {
+      // Show loading icon
+      showLoadingModal();
+      try {
+        let newRewrittenText = await generateRewrittenText();
+        updateModalWithResult(newRewrittenText);
+      } catch (error) {
+        console.error('Error rewriting text:', error);
+        showErrorInModal('An error occurred while rewriting the text.');
+      }
+    };
+
+    cancelButton.onclick = () => {
+      removeModal();
+      if (rewriterInstance) {
+        rewriterInstance.destroy();
+        console.log('Rewriter instance destroyed');
+      }
+    };
+  }
+
+  // Function to remove the modal from the page
+  function removeModal() {
+    if (modalOverlay) {
+      modalOverlay.remove();
+      modalOverlay = null;
+      modal = null;
+    }
   }
 
   // Function to replace the selected text on the page

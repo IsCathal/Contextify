@@ -4,6 +4,7 @@
   "version": "1.0",
   "description": "Adds color-coded, thematic hyperlinks to Project Gutenberg texts.",
   "permissions": [
+    "contextMenus",
     "scripting",
     "activeTab",
     "experimental"
@@ -11,6 +12,9 @@
   "host_permissions": [
     "https://www.gutenberg.org/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://www.gutenberg.org/*"],

@@ -1,4 +1,6 @@
-// categoryInfo object containing categories, colors, and descriptions
+// content.js
+
+// Category information containing colors and descriptions
 const categoryInfo = {
   'History & Society': {
     color: 'green',
@@ -26,6 +28,7 @@ const categoryInfo = {
   }
 };
 
+// Function to retrieve category information
 function getCategoryInfo(category) {
   return categoryInfo[category] || null;
 }
@@ -51,7 +54,7 @@ function categorizeSentence(sentence) {
   }
 }
 
-// Function to process paragraphs
+// Function to process paragraphs and apply categorization
 function processParagraphs() {
   const paragraphs = document.querySelectorAll('p');
   for (let para of paragraphs) {
@@ -73,5 +76,5 @@ function processParagraphs() {
   }
 }
 
-// Start processing
+// Start processing paragraphs when the content script runs
 processParagraphs();

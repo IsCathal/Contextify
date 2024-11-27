@@ -60,9 +60,16 @@ function categorizeSentence(sentence) {
   return null;
 }
 
-// Function to process paragraphs and apply categorization
-function processParagraphs() {
+function updateParagraphs(paragraphUpdates) {
+  paragraphUpdates.forEach(({ para, newHTML }) => {
+    para.innerHTML = newHTML;
+  });
+}
+
+function processParagraphsDebounced() {
   const paragraphs = document.querySelectorAll('p');
+  const paragraphUpdates = [];
+
   for (let para of paragraphs) {
     const sentences = para.innerText.match(/[^.!?]+[.!?]+/g) || [para.innerText];
     let newHTML = '';
@@ -78,9 +85,11 @@ function processParagraphs() {
       }
     }
 
-    para.innerHTML = newHTML;
+    paragraphUpdates.push({ para, newHTML });
   }
+
+  // Apply batched updates
+  updateParagraphs(paragraphUpdates);
 }
 
-// Start processing paragraphs when the content script runs
-processParagraphs();
+processParagraphsDebounced();

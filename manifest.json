@@ -22,7 +22,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.gutenberg.org/*"],
-      "js": ["src/content.js"],
+      "js": ["libs/compromise.min.js", "src/content.js"],
       "css": ["src/styles.css"]
     }
   ],

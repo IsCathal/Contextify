@@ -23,7 +23,9 @@
     {
       "matches": ["https://www.gutenberg.org/*"],
       "js": ["libs/compromise.min.js", "src/content.js"],
-      "css": ["src/styles.css"]
+      "css": ["src/styles.css"],
+      "run_at": "document_idle"
+
     }
   ],
   "icons": {

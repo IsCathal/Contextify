@@ -1,191 +1,232 @@
 
-# Contexify
+# Contextify Modern Language Rewriter and Thematic Highlighter
 
-Contexify is a Chrome extension designed to enhance your reading experience on Project Gutenberg and other supported websites. It categorizes sentences into thematic groups, highlights them with color-coded backgrounds, and provides tooltips with detailed descriptions. Additionally, it offers a context menu feature that allows you to rephrase selected text into modern English using an AI language model.
+This Chrome extension enhances your reading experience on literature websites like Project Gutenberg by:
+
+- **Rewriting Text in Modern Language**: Select any text, right-click, and choose "Rewrite in Modern Language" to get a modernized version of the selected text.
+- **Interactive Popup**: Preview the rewritten text in a popup before accepting changes.
+- **Retry and Accept Options**: If you're not satisfied with the rewrite, you can retry or accept the rewritten text.
+- **Highlighted Rewritten Text**: Accepted rewrites are highlighted for easy identification.
+- **Color-Coded Categorization**: The extension categorizes sentences into themes like History, Literature, Places, etc., with tooltips providing more information.
+
+---
 
 ## Table of Contents
-- Features
-- Installation
-- Usage
-  - Sentence Categorization and Highlighting
-  - Rephrase for Today
-- Development
-  - Project Structure
-  - Scripts
-  - Dependencies
-- Customization
-- Troubleshooting
-- License
-- Acknowledgments
 
-## Features
+1. [Installation](#installation)
+2. [Enabling Experimental Features](#enabling-experimental-features)
+   - [Enable Gemini Nano](#enable-gemini-nano)
+   - [Enable the Writer and Rewriter APIs](#enable-the-writer-and-rewriter-apis)
+3. [Finalize the Setup](#finalize-the-setup)
+4. [Usage](#usage)
+5. [Files Overview](#files-overview)
+6. [Troubleshooting](#troubleshooting)
+7. [License](#license)
 
-### Sentence Categorization and Highlighting:
-- Automatically processes web pages and highlights sentences based on predefined thematic categories.
-- Categories include:
-  - History & Society
-  - Literature & Art
-  - Places & Spaces
-  - Performance & Expression
-  - The Human Experience
-  - The Creator's Lens
-- Hover over highlighted sentences to view detailed descriptions in tooltips.
-
-### Rephrase for Today:
-- Adds a context menu item when text is selected.
-- Rewrites selected text into modern English using an AI language model.
-- Displays original and rewritten text in a modal window.
-- Options to insert the rewritten text, retry, or cancel.
+---
 
 ## Installation
 
-### Prerequisites
-- Google Chrome browser.
-- Node.js and npm installed on your system.
+### Clone or Download the Repository
 
-### Steps
-
-#### Clone or Download the Repository:
 ```bash
-git clone https://github.com/IsCathal/Contextify.git
+git clone https://github.com//IsCathal/Contextify.git
 ```
 
-#### Navigate to the Extension Directory:
+### Open Chrome Extensions Page
+
+1. Navigate to `chrome://extensions/` in your Chrome browser.
+2. Enable **Developer mode** by toggling the switch in the top right corner.
+
+### Load the Unpacked Extension
+
+1. Click on **Load unpacked**.
+2. Select the directory where you cloned or downloaded the extension files.
+
+---
+
+## Enabling Experimental Features
+
+To use the AI Rewriter and AI Writer APIs, you need to enable experimental features and flags in Chrome.
+
+---
+
+### Enable Gemini Nano
+
+📣 *Ignore this section if you have already set up the Prompt API!*
+
+#### Open Chrome Flags
+
+Open a new tab in Chrome and navigate to:
+
 ```bash
-cd contexify
+chrome://flags/#optimization-guide-on-device-model
 ```
 
-#### Install Dependencies:
-```bash
-npm install
+#### Enable Bypass Performance Requirement
+
+1. Find **"On Device Model Optimization Guide"**.
+2. Set it to **Enabled BypassPerfRequirement**.
+3. This bypasses performance checks that might prevent Gemini Nano from being downloaded to your device.
+
+#### Relaunch Chrome
+
+Click on the **"Relaunch"** button that appears after changing the flag.
+
+#### Confirm Availability of Gemini Nano
+
+1. Open Developer Tools (press `F12` or `Ctrl+Shift+I`).
+2. Go to the **Console** tab.
+3. Enter the following command:
+
+```javascript
+(await ai.assistant.capabilities()).available;
 ```
 
-#### Build the Extension:
-```bash
-npm run build
-```
-This will generate the necessary files in the `dist/` directory.
+If this returns **"readily"**, then you are all set.
 
-#### Load the Extension into Chrome:
-1. Open Chrome and go to `chrome://extensions/`.
-2. Enable Developer mode by toggling the switch in the upper right corner.
-3. Click **Load unpacked** and select the `contexify` directory.
+---
+
+### Enable the Writer and Rewriter APIs
+
+#### Enable Writer API
+
+Open a new tab and navigate to:
+
+```bash
+chrome://flags/#writer-api-for-gemini-nano
+```
+
+Set it to **Enabled**.
+
+#### Enable Rewriter API
+
+Open a new tab and navigate to:
+
+```bash
+chrome://flags/#rewriter-api-for-gemini-nano
+```
+
+Set it to **Enabled**.
+
+#### Relaunch Chrome
+
+Click on the **"Relaunch"** button that appears after changing each flag.
+
+---
+
+## Finalize the Setup
+
+### Trigger Model Download
+
+1. Open Developer Tools and go to the **Console** tab.
+2. Enter the following command:
+
+```javascript
+await ai.writer.create();
+```
+
+Don't worry if the call fails; this forces Chrome to schedule a model download.
+
+---
+
+### Check Availability
+
+1. Enter the following command:
+
+```javascript
+(await ai.assistant.capabilities()).available;
+```
+
+Repeat this command until the response changes to **"readily"**.
+
+This may take about 3 to 5 minutes depending on your network connection, so let your Chrome instance run for a while.
+
+---
 
 ## Usage
 
-### Sentence Categorization and Highlighting
-#### Navigate to a Supported Website:
-Visit Project Gutenberg or any website included in the extension's `host_permissions`.
+### Rewriting Text in Modern Language
 
-#### Observe the Highlights:
-The extension automatically processes paragraphs and highlights sentences based on their categories.
+1. Navigate to a literature website (e.g., Project Gutenberg).
+2. Select the text you wish to rewrite.
+3. Right-click and choose **"Rewrite in Modern Language"** from the context menu.
+4. A modal popup will appear with a loading icon.
+5. Once the rewrite is complete, you'll see the rewritten text.
+6. You can **Accept**, **Retry**, or **Cancel** the rewrite.
+7. Accepted rewrites will replace the original text and be highlighted.
 
-#### View Tooltips:
-Hover over a highlighted sentence to see a tooltip with the category description.
+---
 
-### Rephrase for Today
-#### Select Text:
-Highlight any text on the webpage.
+### Understanding Color-Coded Categories
 
-#### Use the Context Menu:
-Right-click on the selected text.  
-Choose **Rephrase for Today** from the context menu.
+The extension automatically processes paragraphs to highlight sentences based on themes:
+- **History & Society**: Green
+- **Literature & Art**: Orange
+- **Places & Spaces**: Brown
+- **Performance & Expression**: Purple
+- **The Human Experience**: Red
+- **The Creator's Lens**: Blue
 
-#### Interact with the Modal:
-A modal window will appear showing the original and rewritten text.  
-Options:
-- **Insert**: Inserts the rewritten text below the original selection.
-- **Retry**: Attempts to generate a new rephrased version.
-- **Cancel**: Closes the modal without making changes.
+Hover over the colored text to see tooltips with more information.
 
-## Development
+---
 
-### Project Structure
-```css
-contexify/
-├── dist/
-│   ├── background.bundle.js
-│   └── content.bundle.js
-├── src/
-│   ├── background.js
-│   ├── content.js
-│   ├── styles.css
-│   ├── popup.html
-│   └── icons/
-│       ├── icon48.png
-│       └── icon128.png
-├── manifest.json
-├── package.json
-├── package-lock.json
-├── webpack.config.js
-└── .babelrc
-```
+### Extension Features Popup
 
-### Scripts
+Click on the extension icon in the toolbar to view a summary of the extension's features.
 
-#### Build the Extension:
-```bash
-npm run build
-```
+---
 
-#### Watch for Changes:
-```bash
-npm run watch
-```
+## Files Overview
 
-### Dependencies
-- **Compromise.js**: Used for natural language processing to categorize sentences.
+- **manifest.json**: Configuration file for the Chrome extension.
+- **background.js**: Handles context menu interactions and rewriting functionality.
+- **content.js**: Processes page content to highlight themed sentences.
+- **popup.html**: Provides information about the extension when the toolbar icon is clicked.
+- **styles.css**: Contains styles for modals, tooltips, and highlighted text.
 
-### Configuration Files
-- `manifest.json`: Defines the extension's permissions, scripts, and other metadata.
-- `webpack.config.js`: Configuration for bundling scripts using Webpack.
-- `.babelrc`: Babel configuration for transpiling JavaScript.
-
-## Customization
-
-### Adding or Modifying Categories
-Edit `src/content.js`:
-- Modify the `categoryInfo` object to add new categories or update existing ones.
-- Each category includes:
-  - `color`: Background color for highlighting.
-  - `description`: Tooltip text.
-  - `keywords`: Array of keywords to identify the category.
-
-### Adjusting Styles
-Edit `src/styles.css`:
-- Customize the appearance of highlighted text, tooltips, and modal windows.
-
-### Updating Host Permissions
-Edit `manifest.json`:
-- Modify the `host_permissions` field to include additional websites.
-
-#### Example:
-```json
-"host_permissions": [
-  "https://www.gutenberg.org/*",
-  "https://example.com/*"
-]
-```
+---
 
 ## Troubleshooting
 
-### Extension Fails to Load:
-- Ensure all required fields are present in `manifest.json`.
-- Verify file paths and names are correct.
+### Gemini Nano Not Available
 
-### Build Errors:
-- Make sure all dependencies are installed (`npm install`).
-- Check for compatibility issues with Node.js and npm versions.
+1. Ensure you've followed all steps to enable the necessary Chrome flags.
+2. Wait for at least 5 minutes after triggering the model download.
+3. Keep Chrome running and avoid closing it during this time.
+4. Check your internet connection, as the model download requires network access.
 
-### Features Not Working:
-- Confirm that the extension has the necessary permissions.
-- Check the browser console for error messages.
+### AI APIs Not Available
+
+1. Make sure you're using the latest version of Chrome Canary, as experimental features may not be available in stable releases.
+2. Verify that Experimental Web Platform features are enabled:
+    - Navigate to:
+
+```vbnet
+chrome://flags/#enable-experimental-web-platform-features
+```
+
+    - Set it to **Enabled**.
+    - Relaunch Chrome.
+
+### Extension Not Working as Expected
+
+1. Reload the extension from the `chrome://extensions/` page.
+2. Check the Console in Developer Tools for any error messages.
+3. Ensure all required permissions are included in **manifest.json**:
+
+```json
+"permissions": [
+  "contextMenus",
+  "scripting",
+  "activeTab",
+  "experimental"
+]
+```
+
+---
 
 ## License
+
 This project is licensed under the MIT License.
-
-## Acknowledgments
-- **Compromise.js**: For providing a lightweight NLP library.
-- **Project Gutenberg**: For offering a vast collection of public domain texts.
-
-Feel free to contribute to this project by submitting issues or pull requests. Your feedback and enhancements are welcome!

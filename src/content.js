@@ -196,13 +196,13 @@ async function generateRewrittenTextWithPromptAPI(originalText, title, descripti
 
     // Dynamic system prompt based on the highlighted category
     const systemPrompt = `
-      You are an expert in the domain of "${title}". The category is described as: "${description}".
-      Based on this context:
-      - Rewrite the following text in modern English to make it accessible and engaging for contemporary audiences.
-      - Simplify complex language and clarify intricate sentences where necessary.
-      - Ensure the rewritten text remains relevant to the topic "${title}" and retains the original meaning.
-      - Return only the text of the rewrite.
-    `;
+  You are an expert in the domain of "${title}". The category is described as: "${description}".
+  Based on this context:
+  - Explain why the following text belongs to the category "${title}".
+  - Highlight specific elements in the text that align with the description of the category.
+  - Provide a concise yet detailed explanation that makes the connection clear.
+  - Return only the explanation.
+`;
     console.log(systemPrompt)
     const session = await ai.languageModel.create({
       temperature: temperature,

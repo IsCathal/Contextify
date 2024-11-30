@@ -43,7 +43,7 @@ function getCategoryInfo(category) {
   return categoryInfo[category] || null;
 }
 
-// Function to categorize a sentence based on keywords and Compromise.js analysis
+// Function to categorize a sentence based on keywords
 function categorizeSentence(sentence) {
   const doc = nlp(sentence);
   const terms = doc.terms().out('array').map((word) => word.toLowerCase());
@@ -63,38 +63,78 @@ function categorizeSentence(sentence) {
 // Function to fetch explanation with context from the API
 async function fetchExplanationFromAPIWithContext(sentence, title, description) {
   try {
-    const response = await generateRewrittenTextWithPromptAPI(sentence, title, description);
-    return response.rewrittenText; // Adjust based on API response structure
+    const response = await generateExplanationWithPromptAPI(sentence, title, description);
+    return response.explanation; // Adjust based on API response structure
   } catch (error) {
     console.error('Error fetching explanation:', error);
     return 'An error occurred while fetching the explanation.';
   }
 }
 
-// Function to create a popup modal
-function createPopupModal() {
-  const modal = document.createElement('div');
-  modal.id = 'popup-modal';
-  modal.style.display = 'none';
-  modal.style.position = 'fixed';
-  modal.style.zIndex = '1000';
-  modal.style.left = '50%';
-  modal.style.top = '50%';
-  modal.style.transform = 'translate(-50%, -50%)';
-  modal.style.backgroundColor = '#fff';
-  modal.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-  modal.style.padding = '20px';
-  modal.style.borderRadius = '8px';
-  modal.style.width = '80%';
-  modal.style.maxWidth = '500px';
+// Function to generate an explanation using the Prompt API
+async function generateExplanationWithPromptAPI(originalText, title, description) {
+  console.log('Generating explanation using Prompt API...');
+
+  if (typeof ai === 'undefined' || !ai.languageModel) {
+    throw new Error('The AI Language Model API is not available.');
+  }
+
+  const { available } = await ai.languageModel.capabilities();
+
+  if (available !== 'no') {
+    const temperature = 1;
+    const topK = 3;
+
+    const systemPrompt = `
+      You are an expert in the domain of "${title}". The category is described as: "${description}".
+      Based on this context:
+      - Explain why the following text belongs to the category "${title}".
+      - Highlight specific elements in the text that align with the description of the category.
+      - Provide a concise yet detailed explanation that makes the connection clear.
+      - Return only the explanation.
+    `;
+
+    const session = await ai.languageModel.create({
+      temperature: temperature,
+      topK: topK,
+      systemPrompt: systemPrompt,
+    });
+
+    try {
+      const explanation = await session.prompt(originalText);
+      session.destroy();
+      return { explanation: explanation.trim() };
+    } catch (error) {
+      console.error('Error during prompting:', error);
+      session.destroy();
+      throw error;
+    }
+  } else {
+    throw new Error('The AI Language Model API is not available.');
+  }
+}
+
+// Function to create a floating helper widget
+function createFloatingHelper() {
+  const helper = document.createElement('div');
+  helper.id = 'floating-helper';
+  helper.style.position = 'absolute';
+  helper.style.zIndex = '1000';
+  helper.style.padding = '15px';
+  helper.style.borderRadius = '8px';
+  helper.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+  helper.style.backgroundColor = '#fff';
+  helper.style.cursor = 'move';
+  helper.style.display = 'none';
 
   const content = document.createElement('div');
-  content.id = 'modal-content';
-  content.style.marginBottom = '20px';
-  modal.appendChild(content);
+  content.id = 'helper-content';
+  content.textContent = 'Processing...';
+  helper.appendChild(content);
 
   const closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
+  closeButton.style.marginTop = '10px';
   closeButton.style.padding = '10px 20px';
   closeButton.style.border = 'none';
   closeButton.style.borderRadius = '4px';
@@ -102,24 +142,48 @@ function createPopupModal() {
   closeButton.style.color = '#fff';
   closeButton.style.cursor = 'pointer';
   closeButton.addEventListener('click', () => {
-    modal.style.display = 'none';
+    helper.style.display = 'none';
   });
 
-  modal.appendChild(closeButton);
-  document.body.appendChild(modal);
+  helper.appendChild(closeButton);
+  document.body.appendChild(helper);
+
+  makeElementDraggable(helper);
 }
 
-// Function to show the popup modal with content
-function showPopupModal(content) {
-  const modal = document.getElementById('popup-modal');
-  const modalContent = document.getElementById('modal-content');
+// Function to make an element draggable
+function makeElementDraggable(element) {
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDragging = false;
 
-  modalContent.textContent = content;
-  modal.style.display = 'block';
+  element.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - element.offsetLeft;
+    offsetY = e.clientY - element.offsetTop;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      element.style.left = `${e.clientX - offsetX}px`;
+      element.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
 }
 
-// Initialize the popup modal
-createPopupModal();
+// Function to show the floating helper
+function showFloatingHelper(x, y, content = 'Processing...') {
+  const helper = document.getElementById('floating-helper');
+  const helperContent = document.getElementById('helper-content');
+  helperContent.textContent = content;
+  helper.style.left = `${x}px`;
+  helper.style.top = `${y}px`;
+  helper.style.display = 'block';
+}
 
 // Function to add click events to tooltips
 function addClickEventToTooltips() {
@@ -131,11 +195,13 @@ function addClickEventToTooltips() {
       const title = event.target.getAttribute('data-category');
       const description = event.target.getAttribute('data-description');
 
-      // Fetch explanation from API with dynamic title and description
+      const rect = event.target.getBoundingClientRect();
+      showFloatingHelper(rect.x + window.scrollX, rect.y + window.scrollY);
+
       const explanation = await fetchExplanationFromAPIWithContext(sentence, title, description);
 
-      // Display the explanation in the popup modal
-      showPopupModal(explanation);
+      const helperContent = document.getElementById('helper-content');
+      helperContent.textContent = explanation || 'Unable to fetch explanation.';
     });
   });
 }
@@ -170,59 +236,10 @@ function processParagraphsDebounced() {
     paragraphUpdates.push({ para, newHTML });
   }
 
-  // Apply batched updates
   updateParagraphs(paragraphUpdates);
-
-  // Add click event listeners to tooltips
   addClickEventToTooltips();
 }
 
-// Run the function
+// Initialize
 processParagraphsDebounced();
-
-// Function to generate rewritten text using the Prompt API
-async function generateRewrittenTextWithPromptAPI(originalText, title, description) {
-  console.log('Generating rewritten text using Prompt API...');
-
-  if (typeof ai === 'undefined' || !ai.languageModel) {
-    throw new Error('The AI Language Model API is not available.');
-  }
-
-  const { available } = await ai.languageModel.capabilities();
-
-  if (available !== 'no') {
-    const temperature = 1;
-    const topK = 3;
-
-    // Dynamic system prompt based on the highlighted category
-    const systemPrompt = `
-  You are an expert in the domain of "${title}". The category is described as: "${description}".
-  Based on this context:
-  - Explain why the following text belongs to the category "${title}".
-  - Highlight specific elements in the text that align with the description of the category.
-  - Provide a concise yet detailed explanation that makes the connection clear.
-  - Return only the explanation.
-`;
-    console.log(systemPrompt)
-    const session = await ai.languageModel.create({
-      temperature: temperature,
-      topK: topK,
-      systemPrompt: systemPrompt,
-    });
-
-    try {
-      const rewrittenText = await session.prompt(originalText);
-      session.destroy();
-      return {
-        originalText: originalText,
-        rewrittenText: rewrittenText.trim(),
-      };
-    } catch (error) {
-      console.error('Error during prompting:', error);
-      session.destroy();
-      throw error;
-    }
-  } else {
-    throw new Error('The AI Language Model API is not available.');
-  }
-}
+createFloatingHelper();

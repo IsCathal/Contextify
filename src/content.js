@@ -60,16 +60,66 @@ function categorizeSentence(sentence) {
   return null;
 }
 
-// Function to fetch explanation from the API
-async function fetchExplanationFromAPI(sentence) {
+// Function to fetch explanation with context from the API
+async function fetchExplanationFromAPIWithContext(sentence, title, description) {
   try {
-    const response = await generateRewrittenTextWithPromptAPI(sentence);
+    const response = await generateRewrittenTextWithPromptAPI(sentence, title, description);
     return response.rewrittenText; // Adjust based on API response structure
   } catch (error) {
     console.error('Error fetching explanation:', error);
     return 'An error occurred while fetching the explanation.';
   }
 }
+
+// Function to create a popup modal
+function createPopupModal() {
+  const modal = document.createElement('div');
+  modal.id = 'popup-modal';
+  modal.style.display = 'none';
+  modal.style.position = 'fixed';
+  modal.style.zIndex = '1000';
+  modal.style.left = '50%';
+  modal.style.top = '50%';
+  modal.style.transform = 'translate(-50%, -50%)';
+  modal.style.backgroundColor = '#fff';
+  modal.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
+  modal.style.padding = '20px';
+  modal.style.borderRadius = '8px';
+  modal.style.width = '80%';
+  modal.style.maxWidth = '500px';
+
+  const content = document.createElement('div');
+  content.id = 'modal-content';
+  content.style.marginBottom = '20px';
+  modal.appendChild(content);
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  closeButton.style.padding = '10px 20px';
+  closeButton.style.border = 'none';
+  closeButton.style.borderRadius = '4px';
+  closeButton.style.backgroundColor = '#007BFF';
+  closeButton.style.color = '#fff';
+  closeButton.style.cursor = 'pointer';
+  closeButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  modal.appendChild(closeButton);
+  document.body.appendChild(modal);
+}
+
+// Function to show the popup modal with content
+function showPopupModal(content) {
+  const modal = document.getElementById('popup-modal');
+  const modalContent = document.getElementById('modal-content');
+
+  modalContent.textContent = content;
+  modal.style.display = 'block';
+}
+
+// Initialize the popup modal
+createPopupModal();
 
 // Function to add click events to tooltips
 function addClickEventToTooltips() {
@@ -78,13 +128,14 @@ function addClickEventToTooltips() {
   tooltips.forEach((tooltip) => {
     tooltip.addEventListener('click', async (event) => {
       const sentence = event.target.innerText;
+      const title = event.target.getAttribute('data-category');
+      const description = event.target.getAttribute('data-description');
 
-      // Fetch explanation from API
-      const explanation = await fetchExplanationFromAPI(sentence);
+      // Fetch explanation from API with dynamic title and description
+      const explanation = await fetchExplanationFromAPIWithContext(sentence, title, description);
 
-      // Display the explanation (update tooltip or show inline)
-      tooltip.setAttribute('data-description', explanation);
-      alert(`Explanation: ${explanation}`); // Replace with better UI if needed
+      // Display the explanation in the popup modal
+      showPopupModal(explanation);
     });
   });
 }
@@ -110,7 +161,7 @@ function processParagraphsDebounced() {
       const categoryData = getCategoryInfo(category);
 
       if (categoryData) {
-        newHTML += `<span class="tooltip ${categoryData.color}" data-description="${categoryData.description}">${sentence}</span>`;
+        newHTML += `<span class="tooltip ${categoryData.color}" data-category="${category}" data-description="${categoryData.description}">${sentence}</span>`;
       } else {
         newHTML += sentence;
       }
@@ -129,66 +180,45 @@ function processParagraphsDebounced() {
 // Run the function
 processParagraphsDebounced();
 
-
-
 // Function to generate rewritten text using the Prompt API
-async function generateRewrittenTextWithPromptAPI(originalText) {
+async function generateRewrittenTextWithPromptAPI(originalText, title, description) {
   console.log('Generating rewritten text using Prompt API...');
 
-  // Check if 'ai' and 'ai.languageModel' are available
   if (typeof ai === 'undefined' || !ai.languageModel) {
     throw new Error('The AI Language Model API is not available.');
   }
 
-  // Check the capabilities of the language model
   const { available } = await ai.languageModel.capabilities();
 
   if (available !== 'no') {
-    // Set temperature and topK
     const temperature = 1;
     const topK = 3;
 
-    // Construct the system prompt
+    // Dynamic system prompt based on the highlighted category
     const systemPrompt = `
-      You are an English tutor specializing in literature. Rewrite the following text in modern English to make it accessible and engaging for contemporary students.
-      - Simplify archaic language and clarify complex sentences where necessary.
-      - Preserve the original meaning and literary elements.
-      - Return only the text of the Rewrite
+      You are an expert in the domain of "${title}". The category is described as: "${description}".
+      Based on this context:
+      - Rewrite the following text in modern English to make it accessible and engaging for contemporary audiences.
+      - Simplify complex language and clarify intricate sentences where necessary.
+      - Ensure the rewritten text remains relevant to the topic "${title}" and retains the original meaning.
+      - Return only the text of the rewrite.
     `;
-
-    // Create a language model session with specific parameters and system prompt
+    console.log(systemPrompt)
     const session = await ai.languageModel.create({
       temperature: temperature,
       topK: topK,
       systemPrompt: systemPrompt,
     });
-    console.log(
-      'Language model session created with temperature:',
-      temperature,
-      'and topK:',
-      topK
-    );
 
     try {
-      // Prompt the model with the original text
       const rewrittenText = await session.prompt(originalText);
-      console.log(
-        'Rewritten text received from Prompt API:',
-        rewrittenText.trim()
-      );
-
-      // Destroy the session
       session.destroy();
-
-      // Return both original and rewritten text
       return {
         originalText: originalText,
         rewrittenText: rewrittenText.trim(),
       };
     } catch (error) {
       console.error('Error during prompting:', error);
-
-      // Destroy the session in case of error
       session.destroy();
       throw error;
     }

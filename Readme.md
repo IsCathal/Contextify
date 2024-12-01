@@ -18,12 +18,10 @@ This Chrome extension enhances your reading experience on the literature website
 1. [Installation](#installation)
 2. [Enabling Experimental Features](#enabling-experimental-features)
    - [Enable Gemini Nano](#enable-gemini-nano)
-   - [Enable the Writer and Rewriter APIs](#enable-the-writer-and-rewriter-apis)
-3. [Finalize the Setup](#finalize-the-setup)
-4. [Usage](#usage)
-5. [Files Overview](#files-overview)
-6. [Troubleshooting](#troubleshooting)
-7. [License](#license)
+3. [Usage](#usage)
+4. [Files Overview](#files-overview)
+5. [Troubleshooting](#troubleshooting)
+6. [License](#license)
 
 ---
 

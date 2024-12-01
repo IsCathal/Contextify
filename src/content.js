@@ -1,4 +1,9 @@
 // Category information containing colors, descriptions, and keywords
+
+const meta = document.createElement('meta');
+meta.httpEquiv = 'origin-trial';
+meta.content = 'AtuU4EkfNV3sUuJ1RROsaTr3jaRqLgUscBEVx489Gij0l5JtlD4nZUH62C2yRI2DUDRlP9818PW5IbXSf7IEog4AAAB4eyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vYmVjbmdvb2Noam1tYWFuZXBmcGRjaWNqbmpmY2hqbmMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElGb3JFeHRlbnNpb24iLCJleHBpcnkiOjE3NjA0ODYzOTl9';
+document.head.appendChild(meta);
 const categoryInfo = {
   'History & Society': {
     color: 'green',

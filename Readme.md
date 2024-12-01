@@ -33,7 +33,12 @@ This Chrome extension enhances your reading experience on literature websites li
 git clone https://github.com//IsCathal/Contextify.git
 ```
 
+### Download Chrome Dev
+
 ### Open Chrome Extensions Page
+```bash
+https://www.google.com/intl/en_ie/chrome/dev/
+```
 
 1. Navigate to `chrome://extensions/` in your Chrome browser.
 2. Enable **Developer mode** by toggling the switch in the top right corner.

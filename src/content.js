@@ -248,4 +248,3 @@ function processParagraphsDebounced() {
 // Initialize
 processParagraphsDebounced();
 createFloatingHelper();
-

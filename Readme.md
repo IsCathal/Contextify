@@ -80,13 +80,9 @@ Click on the **"Relaunch"** button that appears after changing the flag.
 
 #### Confirm Availability of Gemini Nano
 
-1. Open Developer Tools (press `F12` or `Ctrl+Shift+I`).
-2. Go to the **Console** tab.
-3. Enter the following command:
 
-```javascript
-(await ai.assistant.capabilities()).available;
-```
+Open DevTools and send (await ai.languageModel.capabilities()).available; in the console. 
+If this returns “readily”, then you are all set. 
 
 If this returns **"readily"**, then you are all set.
 

@@ -1,13 +1,15 @@
 
 # Contextify Modern Language Rewriter and Thematic Highlighter
 
-This Chrome extension enhances your reading experience on literature websites like Project Gutenberg by:
+This Chrome extension enhances your reading experience on the literature website Project Gutenberg by:
 
+- **Color-Coded Categorization**: The extension categorizes sentences into themes like History, Literature, Places, etc., with tooltips providing more information.
+- **Interactive Explanations**: Clicking on highlighted text triggers a floating helper widget, powered by the Prompt API, that provides detailed insights into why the sentence belongs to its assigned theme. This enhances the reading experience by offering context and deeper understanding of the text's connection to the theme.
 - **Rewriting Text in Modern Language**: Select any text, right-click, and choose "Rewrite in Modern Language" to get a modernized version of the selected text.
 - **Interactive Popup**: Preview the rewritten text in a popup before accepting changes.
 - **Retry and Accept Options**: If you're not satisfied with the rewrite, you can retry or accept the rewritten text.
 - **Highlighted Rewritten Text**: Accepted rewrites are highlighted for easy identification.
-- **Color-Coded Categorization**: The extension categorizes sentences into themes like History, Literature, Places, etc., with tooltips providing more information.
+
 
 ---
 
@@ -63,8 +65,6 @@ Open a new tab in Chrome and navigate to:
 chrome://flags/#optimization-guide-on-device-model
 ```
 
-
-
 #### Enable Bypass Performance Requirement
 
 1. Find **"On Device Model Optimization Guide"**.
@@ -84,41 +84,19 @@ Click on the **"Relaunch"** button that appears after changing the flag.
 Open DevTools and send (await ai.languageModel.capabilities()).available; in the console. 
 If this returns “readily”, then you are all set. 
 
+Repeat this command until the response changes to **"readily"**.
+
+This may take about 3 to 5 minutes depending on your network connection, so let your Chrome instance run for a while.
+
 If this returns **"readily"**, then you are all set.
 
 ---
 
 
-#### Relaunch Chrome
-
-Click on the **"Relaunch"** button that appears after changing each flag.
-
----
-
-## Finalize the Setup
-
-### Trigger Model Download
-
-
-Repeat this command until the response changes to **"readily"**.
-
-This may take about 3 to 5 minutes depending on your network connection, so let your Chrome instance run for a while.
-
----
-
 ## Usage
 
-### Rewriting Text in Modern Language
-
-1. Navigate to a literature website (e.g., Project Gutenberg).
-2. Select the text you wish to rewrite.
-3. Right-click and choose **"Rewrite in Modern Language"** from the context menu.
-4. A modal popup will appear with a loading icon.
-5. Once the rewrite is complete, you'll see the rewritten text.
-6. You can **Accept**, **Retry**, or **Cancel** the rewrite.
-7. Accepted rewrites will replace the original text and be highlighted.
-
----
+1. Navigate to a literature website [Project Gutenberg](https://www.gutenberg.org).
+2. Select the text you wish to enhance.
 
 ### Understanding Color-Coded Categories
 
@@ -152,6 +130,23 @@ You can close the widget by clicking the "Close" button within the floating help
 Click on the extension icon in the toolbar to view a summary of the extension's features.
 
 ---
+
+### Rewriting Text in Modern Language
+
+Transform classic or complex text into clear, contemporary language with ease:
+
+1. Right-click on the selected text and choose **"Rewrite in Modern Language"** from the context menu to initiate the rewrite process.
+2. A modal popup will appear, displaying a loading icon while the extension processes your request using the Prompt API.
+3. Once the rewrite is complete, the modal will display the rewritten text alongside the original for comparison.
+4. Choose from the following actions:
+   - **Accept**: Replace the original text on the page with the rewritten version, which will be highlighted for easy identification.
+   - **Retry**: Reprocess the original text for a new rewrite.
+   - **Cancel**: Dismiss the modal without making changes.
+5. Accepted places a rewrite seamlessly integrate into the webpage, enhancing readability without disrupting the layout or originally of the text.
+
+
+---
+
 
 ## Files Overview
 

@@ -152,9 +152,23 @@ The extension automatically processes paragraphs to highlight sentences based on
 - **The Human Experience**: Red
 - **The Creator's Lens**: Blue
 
-Hover over the colored text to see tooltips with more information.
+Hover over any highlighted text to see a tooltip explaining the theme and how the sentence relates to it.
 
 ---
+### Clicking on Highlighted Text for More Context
+### Clicking on Highlighted Text for More Context
+
+#### Click on Highlighted Text
+Clicking on a sentence highlighted in color triggers a Prompt API request. A floating widget appears near the text, displaying a "Processing..." message.
+
+#### Prompt API in Action
+The API generates a detailed explanation about how the selected text aligns with its assigned category.
+
+#### View the Explanation
+The floating widget updates with the generated context, offering insights into the sentence's theme and relevance.
+
+#### Dismiss the Widget
+You can close the widget by clicking the "Close" button within the floating helper.
 
 ### Extension Features Popup
 

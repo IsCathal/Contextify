@@ -34,11 +34,15 @@ git clone https://github.com//IsCathal/Contextify.git
 ```
 
 ### Download Chrome Dev
-
-### Open Chrome Extensions Page
 ```bash
 https://www.google.com/intl/en_ie/chrome/dev/
 ```
+
+### Open Chrome Extensions Page
+```bash
+chrome://extensions
+```
+chrome://extensions
 
 1. Navigate to `chrome://extensions/` in your Chrome browser.
 2. Enable **Developer mode** by toggling the switch in the top right corner.

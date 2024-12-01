@@ -156,7 +156,6 @@ Hover over any highlighted text to see a tooltip explaining the theme and how th
 
 ---
 ### Clicking on Highlighted Text for More Context
-### Clicking on Highlighted Text for More Context
 
 #### Click on Highlighted Text
 Clicking on a sentence highlighted in color triggers a Prompt API request. A floating widget appears near the text, displaying a "Processing..." message.

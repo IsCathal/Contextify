@@ -92,27 +92,6 @@ If this returns **"readily"**, then you are all set.
 
 ---
 
-### Enable the Writer and Rewriter APIs
-
-#### Enable Writer API
-
-Open a new tab and navigate to:
-
-```bash
-chrome://flags/#writer-api-for-gemini-nano
-```
-
-Set it to **Enabled**.
-
-#### Enable Rewriter API
-
-Open a new tab and navigate to:
-
-```bash
-chrome://flags/#rewriter-api-for-gemini-nano
-```
-
-Set it to **Enabled**.
 
 #### Relaunch Chrome
 
@@ -192,6 +171,69 @@ Click on the extension icon in the toolbar to view a summary of the extension's 
 - **styles.css**: Contains styles for modals, tooltips, and highlighted text.
 
 ---
+
+
+# Using the Prompt API in Your Project
+
+The Prompt API was a core component of my project, **Contextify**, as it enabled dynamic and efficient interaction with Chrome's built-in AI model, Gemini Nano. Here's a breakdown of how the Prompt API was used:
+
+## Objective
+The Prompt API was leveraged to modernize classic literary texts by:
+- Simplifying archaic language for contemporary readers.
+- Providing thematic explanations for educational purposes.
+- Enhancing user interaction with AI-powered contextual tools.
+
+## Implementation Steps
+
+### 1. Sentence Categorization
+The Prompt API was used to analyze sentences within classic texts, classify them into predefined themes (e.g., History & Society, Literature & Art), and provide explanations:
+
+- **Input:** Individual sentences extracted from the text.
+- **Prompt:** 
+    ```
+    Classify the following sentence into one of the categories: 
+    "History & Society," "Literature & Art," "Places & Spaces," "Performance & Expression," 
+    "The Human Experience," or "The Creator's Lens." 
+    Explain why the sentence fits that category.
+    Sentence: [Input Sentence]
+    ```
+- **Output:** The category and a concise explanation of its relevance.
+
+### 2. Rewriting Text for Modern Audiences
+The Prompt API was instrumental in transforming complex and archaic language into clear, modern English:
+
+- **Input:** Selected text from classic literature.
+- **Prompt:** 
+    ```
+    Rewrite the following text in modern English, ensuring it remains engaging and accessible for contemporary readers. 
+    Simplify archaic language, clarify complex ideas, and retain the original meaning.
+    Text: [Input Text]
+    ```
+- **Output:** A simplified and modernized version of the text.
+
+### 3. Explanations for Highlighted Text
+Contextual explanations were generated for highlighted sections of the text, aiding readers in understanding its themes:
+
+- **Input:** Highlighted text and the corresponding theme.
+- **Prompt:** 
+    ```
+    You are an expert in the theme "[Theme Name]." 
+    Explain how the following text aligns with this theme, providing clear and concise insights:
+    Text: [Highlighted Text]
+    ```
+- **Output:** A detailed explanation linking the text to the theme.
+
+### 4. Integration with Chrome Extension
+The Prompt API was called directly from the Chrome extension using JavaScript and asynchronous API requests:
+- The **input text** was sent to the Prompt API via a dedicated handler.
+- **Real-time responses** from the API were displayed in modals or tooltips within the browser.
+
+## Benefits of Using the Prompt API
+- **Efficiency:** The API enabled rapid processing of complex text with high accuracy.
+- **Flexibility:** Prompts could be tailored dynamically based on user interactions or selected themes.
+- **Scalability:** The API seamlessly handled texts of varying lengths and complexities.
+- **User Engagement:** By combining modernized language with contextual insights, it enriched the reader's experience.
+
 
 ## Troubleshooting
 

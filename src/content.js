@@ -78,6 +78,7 @@ function categorizeSentence(sentence) {
     const { keywords } = data;
     for (const keyword of keywords) {
       if (terms.includes(keyword)) {
+        console.log(`Keyword matched: "${keyword}" in category "${category}"`);
         return category;
       }
     }
@@ -90,6 +91,10 @@ function categorizeSentence(sentence) {
 async function fetchExplanationFromAPIWithContext(sentence, title, description) {
   try {
     const response = await generateExplanationWithPromptAPI(sentence, title, description);
+    console.log('Generating explanation using Prompt API...');
+    console.log(`Sentence: "${sentence}"`);
+    console.log(`Category Title: "${title}"`);
+    console.log(`Category Description: "${description}"`);
     return response.explanation; // Adjust based on API response structure
   } catch (error) {
     console.error('Error fetching explanation:', error);
@@ -106,6 +111,8 @@ async function generateExplanationWithPromptAPI(originalText, title, description
   }
 
   const { available } = await ai.languageModel.capabilities();
+  console.log('AI Model Capabilities:', available);
+
 
   if (available !== 'no') {
     const temperature = 1;
@@ -119,6 +126,9 @@ async function generateExplanationWithPromptAPI(originalText, title, description
       - Provide a concise yet detailed explanation that makes the connection clear.
       - Return only the explanation.
     `;
+
+    console.log('System Prompt:', systemPrompt);
+
 
     const session = await ai.languageModel.create({
       temperature: temperature,

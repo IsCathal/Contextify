@@ -97,6 +97,7 @@ If this returns **"readily"**, then you are all set.
 
 1. Navigate to a literature website [Project Gutenberg](https://www.gutenberg.org).
 2. Select the text you wish to enhance.
+3. I suggest [Dubliners](https://www.gutenberg.org/cache/epub/2814/pg2814-images.html)
 
 ### Understanding Color-Coded Categories
 

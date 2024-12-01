@@ -39,10 +39,6 @@ https://www.google.com/intl/en_ie/chrome/dev/
 ```
 
 ### Open Chrome Extensions Page
-```bash
-chrome://extensions
-```
-chrome://extensions
 
 1. Navigate to `chrome://extensions/` in your Chrome browser.
 2. Enable **Developer mode** by toggling the switch in the top right corner.
@@ -54,11 +50,6 @@ chrome://extensions
 
 ---
 
-## Enabling Experimental Features
-
-To use the AI Rewriter and AI Writer APIs, you need to enable experimental features and flags in Chrome.
-
----
 
 ### Enable Gemini Nano
 
@@ -72,11 +63,16 @@ Open a new tab in Chrome and navigate to:
 chrome://flags/#optimization-guide-on-device-model
 ```
 
+
+
 #### Enable Bypass Performance Requirement
 
 1. Find **"On Device Model Optimization Guide"**.
 2. Set it to **Enabled BypassPerfRequirement**.
 3. This bypasses performance checks that might prevent Gemini Nano from being downloaded to your device.
+4. Go to chrome://flags/#prompt-api-for-gemini-nano
+5. Select Enabled
+
 
 #### Relaunch Chrome
 

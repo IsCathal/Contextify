@@ -99,24 +99,6 @@ Click on the **"Relaunch"** button that appears after changing each flag.
 
 ### Trigger Model Download
 
-1. Open Developer Tools and go to the **Console** tab.
-2. Enter the following command:
-
-```javascript
-await ai.writer.create();
-```
-
-Don't worry if the call fails; this forces Chrome to schedule a model download.
-
----
-
-### Check Availability
-
-1. Enter the following command:
-
-```javascript
-(await ai.assistant.capabilities()).available;
-```
 
 Repeat this command until the response changes to **"readily"**.
 

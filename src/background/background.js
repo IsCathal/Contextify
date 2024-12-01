@@ -1,5 +1,4 @@
 // background.js
-// Listen for the extension being installed or updated
 chrome.runtime.onInstalled.addListener(() => {
   // Create a context menu item when text is selected
   chrome.contextMenus.create({

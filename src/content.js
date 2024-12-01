@@ -97,7 +97,6 @@ async function fetchExplanationFromAPIWithContext(sentence, title, description) 
     console.log(`Category Description: "${description}"`);
     return response.explanation; // Adjust based on API response structure
   } catch (error) {
-    console.error('Error fetching explanation:', error);
     return 'An error occurred while fetching the explanation.';
   }
 }

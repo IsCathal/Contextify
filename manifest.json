@@ -4,7 +4,6 @@
   "version": "1.0",
   "description": "Adds color-coded, thematic hyperlinks to Project Gutenberg texts.",
     "author": "Cathal McCabe",
-  "license": "MIT",
   "permissions": [
     "contextMenus",
     "scripting",

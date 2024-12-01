@@ -156,18 +156,24 @@ async function generateRewrittenTextWithPromptAPI(originalText) {
     // Clear the modal content
     modal.innerHTML = '';
   
-    const title = document.createElement('h2');
-    title.innerText = 'Rewritten Text';
+    // Create and append "Original Text" section
+    const originalTitle = document.createElement('h2');
+    originalTitle.innerText = 'Original Text';
   
     const originalTextDiv = document.createElement('div');
     originalTextDiv.id = 'originalText';
     originalTextDiv.innerText = originalText;
     originalTextDiv.style.marginBottom = '10px';
   
+    // Create and append "Rewritten Text" section
+    const rewrittenTitle = document.createElement('h2');
+    rewrittenTitle.innerText = 'Rewritten Text';
+  
     const rewrittenTextDiv = document.createElement('div');
     rewrittenTextDiv.id = 'rewrittenText';
     rewrittenTextDiv.innerText = rewrittenText;
   
+    // Create buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.id = 'buttonContainer';
   
@@ -182,7 +188,7 @@ async function generateRewrittenTextWithPromptAPI(originalText) {
   
     acceptButton.appendChild(acceptIcon);
   
-    retryButton = document.createElement('button');
+    const retryButton = document.createElement('button');
     retryButton.id = 'retryButton';
     retryButton.title = 'Retry';
   
@@ -192,7 +198,7 @@ async function generateRewrittenTextWithPromptAPI(originalText) {
   
     retryButton.appendChild(retryIcon);
   
-    cancelButton = document.createElement('button');
+    const cancelButton = document.createElement('button');
     cancelButton.id = 'cancelButton';
     cancelButton.title = 'Cancel';
   
@@ -208,8 +214,9 @@ async function generateRewrittenTextWithPromptAPI(originalText) {
     buttonContainer.appendChild(retryButton);
     buttonContainer.appendChild(cancelButton);
   
-    modal.appendChild(title);
+    modal.appendChild(originalTitle);
     modal.appendChild(originalTextDiv);
+    modal.appendChild(rewrittenTitle);
     modal.appendChild(rewrittenTextDiv);
     modal.appendChild(buttonContainer);
   
@@ -238,6 +245,7 @@ async function generateRewrittenTextWithPromptAPI(originalText) {
       destroyResources();
     };
   }
+  
 
   // Function to insert the rewritten text below the selected text
 function insertRewrittenTextBelowSelection(rewrittenText) {

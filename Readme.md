@@ -114,21 +114,22 @@ Hover over any highlighted text to see a tooltip explaining the theme and how th
 ---
 ### Clicking on Highlighted Text for More Context
 
-#### Click on Highlighted Text
-Clicking on a sentence highlighted in color triggers a Prompt API request. A floating widget appears near the text, displaying a "Processing..." message.
+- **Click on Highlighted Text**
+  - Clicking on a sentence highlighted in color triggers a Prompt API request.
+  - A floating widget appears near the text, displaying a "Processing..." message.
 
-#### Prompt API in Action
-The API generates a detailed explanation about how the selected text aligns with its assigned category.
+- **Prompt API in Action**
+  - The API generates a detailed explanation about how the selected text aligns with its assigned category.
 
-#### View the Explanation
-The floating widget updates with the generated context, offering insights into the sentence's theme and relevance.
+- **View the Explanation**
+  - The floating widget updates with the generated context, offering insights into the sentence's theme and relevance.
 
-#### Dismiss the Widget
-You can close the widget by clicking the "Close" button within the floating helper.
+- **Dismiss the Widget**
+  - You can close the widget by clicking the "Close" button within the floating helper.
 
-### Extension Features Popup
+- **Extension Features Popup**
+  - Click on the extension icon in the toolbar to view a summary of the extension's features.
 
-Click on the extension icon in the toolbar to view a summary of the extension's features.
 
 ---
 
